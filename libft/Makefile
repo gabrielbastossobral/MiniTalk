@@ -6,7 +6,7 @@
 #    By: gabastos <gabastos@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/07 09:54:20 by gabastos          #+#    #+#              #
-#    Updated: 2024/10/22 09:18:45 by gabastos         ###   ########.fr        #
+#    Updated: 2024/12/11 11:30:21 by gabastos         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,9 +68,7 @@ all: $(NAME)
 
 $(NAME): $(OBJ)
 	@ar rc $(NAME) $(OBJ)
-	@echo "$(NAME) created"
 	@ranlib $(NAME)
-	@echo "$(NAME) indexed"
 
 bonus: $(OBJ_B)
 	@ar rc $(NAME) $(OBJ_B)
@@ -80,11 +78,9 @@ bonus: $(OBJ_B)
 
 clean:
 	@rm -f $(OBJ) $(OBJ_B)
-	@echo "OBJ deleted"
 
 fclean: clean
 	@rm -f $(NAME)
-	@echo "$(NAME) deleted"
 
 re: fclean all
 
