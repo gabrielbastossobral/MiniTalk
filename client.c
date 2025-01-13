@@ -6,7 +6,7 @@
 /*   By: gabastos <gabastos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:01:58 by gabrielsobr       #+#    #+#             */
-/*   Updated: 2024/12/12 11:23:44 by gabastos         ###   ########.fr       */
+/*   Updated: 2025/01/13 09:48:55 by gabastos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,70 +14,66 @@
 #include "ft_printf/ft_printf.h"
 #include "libft/libft.h"
 
-int	g_ack_received = 0;
+int	g_confirm = 0;
 
-void	receive_ack(int sig)
+void	ft_handle_global(int signum)
 {
-	if (sig == SIGUSR1)
-		g_ack_received = 1;
+	if (signum == SIGUSR1)
+		g_confirm = 1;
 }
 
-void	send_bit(int pid, char *str)
+void	ft_send_signal(unsigned char letter, int pid)
 {
-	int	octet;
-	int	i;
+	int	bit;
 
-	i = 0;
-	while (str[i])
+	bit = 0;
+	while (bit < 8)
 	{
-		octet = 0;
-		while (octet < 8)
+		g_confirm = 0;
+		if ((letter >> bit & 1) == 1)
+			kill(pid, SIGUSR2);
+		else
+			kill(pid, SIGUSR1);
+		bit++;
+		while (!g_confirm)
+			;
+	}
+}
+
+void	ft_end(int pid)
+{
+	int	bit;
+
+	bit = 0;
+	while (bit < 8)
+	{
+		g_confirm = 0;
+		kill(pid, SIGUSR1);
+		bit++;
+		while (!g_confirm)
+			;
+	}
+}
+
+int	main(int argc, char *argv[])
+{
+	int	pid;
+
+	if (argc == 3)
+	{
+		pid = ft_atoi(argv[1]);
+		signal(SIGUSR1, ft_handle_global);
+		while (*argv[2])
 		{
-			if ((str[i] >> octet) & 1)
-				kill(pid, SIGUSR1);
-			else
-				kill(pid, SIGUSR2);
-			while (!g_ack_received)
-				pause();
-			g_ack_received = 0;
-			octet++;
+			ft_send_signal(*argv[2], pid);
+			argv[2]++;
 		}
-		i++;
+		ft_end(pid);
 	}
-}
-
-void	send_eof(int pid)
-{
-	int	octet;
-
-	octet = 0;
-	while (octet < 8)
+	else
 	{
-		kill(pid, SIGUSR2);
-		while (!g_ack_received)
-			pause();
-		g_ack_received = 0;
-		octet++;
+		ft_printf("We only accept gossip in the following format:\n");
+		ft_printf("./client <PID> <message>\n");
 	}
-	ft_printf("ACK received\n");
-}
-
-int	main(int argc, char **argv)
-{
-	struct sigaction	sa;
-	int					server_pid;
-
-	if (argc != 3)
-	{
-		ft_printf("COMMON MAN, YOU NEED TO PASS THE SERVER PID AND A STRING\n");
-		return (1);
-	}
-	server_pid = atoi(argv[1]);
-	sa.sa_handler = receive_ack;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGUSR1, &sa, NULL);
-	send_bit(server_pid, argv[2]);
-	send_eof(server_pid);
 	return (0);
 }
