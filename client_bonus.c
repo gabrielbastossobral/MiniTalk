@@ -6,7 +6,7 @@
 /*   By: gabastos <gabastos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/13 09:56:38 by gabastos          #+#    #+#             */
-/*   Updated: 2025/01/13 09:56:39 by gabastos         ###   ########.fr       */
+/*   Updated: 2025/01/14 13:23:17 by gabastos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,8 @@ void	ft_end(int pid)
 		while (!g_confirm)
 			;
 	}
+	if (g_confirm)
+		ft_printf("Message received by server\n");
 }
 
 int	main(int argc, char *argv[])
@@ -72,7 +74,7 @@ int	main(int argc, char *argv[])
 	}
 	else
 	{
-		ft_printf("We only accept gossip in the following format:\n");
+		ft_printf("COMMON IT'S JUST PID AND MESSAGE:\n");
 		ft_printf("./client <PID> <message>\n");
 	}
 	return (0);

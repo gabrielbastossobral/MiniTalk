@@ -6,7 +6,7 @@
 /*   By: gabastos <gabastos@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 12:17:16 by gabrielsobr       #+#    #+#             */
-/*   Updated: 2025/01/13 09:48:33 by gabastos         ###   ########.fr       */
+/*   Updated: 2025/01/14 10:21:45 by gabastos         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	main(void)
 {
 	struct sigaction	action;
 
-	ft_printf("Welcome, spill the tea!\nPID: %d\n", getpid());
+	ft_printf("Get the PID man!\nPID: %d\n", getpid());
 	action.sa_flags = SA_SIGINFO;
 	action.sa_sigaction = ft_print_message;
 	sigaction(SIGUSR1, &action, NULL);
